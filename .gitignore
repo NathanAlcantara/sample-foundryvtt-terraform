@@ -1,0 +1,8 @@
+.terraform
+*.lock.hcl
+*.tfstate*
+
+keys/*
+
+*.zip
+aws.json
