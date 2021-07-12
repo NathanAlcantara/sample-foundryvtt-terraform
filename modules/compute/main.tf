@@ -3,7 +3,7 @@ resource "tls_private_key" "foundry" {
   rsa_bits  = 4096
 
   provisioner "local-exec" {
-    command = "mkdir ./keys"
+    command = "mkdir -p ./keys"
   }
 
   provisioner "local-exec" {
