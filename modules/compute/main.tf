@@ -105,8 +105,16 @@ resource "aws_instance" "foundry" {
   provisioner "remote-exec" {
     inline = [
       "bash /tmp/foundry_install_start.sh",
-      "sudo bash /tmp/nginx_config.sh ${aws_instance.foundry.public_dns}",
+      "sudo bash /tmp/nginx_config.sh ${self.public_dns}",
     ]
+  }
+
+  provisioner "local-exec" {
+    command = "bash scripts/install_environment.sh ${self.public_dns}"
+  }
+
+  provisioner "local-exec" {
+    command = "bash scripts/import_worlds.sh ${self.public_ip}"
   }
 
   connection {

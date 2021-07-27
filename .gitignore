@@ -1,3 +1,4 @@
+terraform
 .terraform
 *.lock.hcl
 *.tfstate*
@@ -6,3 +7,6 @@ keys/*
 
 *.zip
 aws.json
+foundry-environment.json
+foundry-settings-export.json
+set_worlds_dirs.sh
