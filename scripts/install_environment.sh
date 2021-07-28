@@ -22,6 +22,4 @@ then
     --compressed \
     --insecure
   done
-
-  pm2 restart foundry
 fi

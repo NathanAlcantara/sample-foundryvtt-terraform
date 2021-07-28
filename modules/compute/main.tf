@@ -117,6 +117,12 @@ resource "aws_instance" "foundry" {
     command = "bash scripts/import_worlds.sh ${self.public_ip}"
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "pm2 restart foundry",
+    ]
+  }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"

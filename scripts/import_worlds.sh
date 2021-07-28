@@ -14,6 +14,4 @@ then
             scp -o StrictHostKeyChecking=accept-new -ri keys/foundry.pem $WORLD_DIR ubuntu@$PUBLIC_IP:~/.local/share/FoundryVTT/Data/worlds
         fi
     done
-
-    pm2 restart foundry
 fi
