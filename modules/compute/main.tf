@@ -79,7 +79,12 @@ resource "aws_instance" "foundry" {
     inline = [
       "mkdir -p /home/ubuntu/.local/share/FoundryVTT/Config",
       "mkdir /home/ubuntu/foundry",
+      "mkdir /home/ubuntu/scripts",
     ]
+  }
+
+  provisioner "local-exec" {
+    command = "bash scripts/setup_aws_cred.sh ${var.foundry_key} ${var.foundry_secret}"
   }
 
   provisioner "file" {
@@ -102,10 +107,22 @@ resource "aws_instance" "foundry" {
     destination = "/tmp/nginx_config.sh"
   }
 
+  provisioner "file" {
+    source      = "files/worlds_backup.sh"
+    destination = "/home/ubuntu/scripts/worlds_backup.sh"
+  }
+
+  provisioner "file" {
+    source      = "files/setup_cron_backup.sh"
+    destination = "/tmp/setup_cron_backup.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "bash /tmp/foundry_install_start.sh",
       "sudo bash /tmp/nginx_config.sh ${self.public_dns}",
+      "bash /tmp/setup_cron_backup.sh",
+      "pm2 restart foundry"
     ]
   }
 
@@ -119,6 +136,7 @@ resource "aws_instance" "foundry" {
 
   provisioner "remote-exec" {
     inline = [
+      "jq '.awsConfig = \"/home/ubuntu/.local/share/FoundryVTT/Config/aws.json\"' ~/.local/share/FoundryVTT/Config/options.json | sponge ~/.local/share/FoundryVTT/Config/options.json",
       "pm2 restart foundry",
     ]
   }
