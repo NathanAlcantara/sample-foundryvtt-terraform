@@ -12,6 +12,8 @@ echo 'server {
     access_log                  /var/log/nginx/foundry/access.log;
     error_log                   /var/log/nginx/foundry/error.log;
 
+    client_max_body_size        10m;
+
     location / {
         proxy_set_header        Host $host;
         proxy_set_header        X-Real-IP $remote_addr;
