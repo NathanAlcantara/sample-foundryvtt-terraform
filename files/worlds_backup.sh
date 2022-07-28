@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GIT_SSH_COMMAND="/usr/bin/ssh -i ~/.ssh/id_rsa"
+export GIT_SSH_COMMAND="/usr/bin/ssh -i ~/.ssh/id_ed25519"
 
 # Git: add, commit changes and send data to Git server
 for PATH in ~/.local/share/FoundryVTT/Data/worlds/*; do

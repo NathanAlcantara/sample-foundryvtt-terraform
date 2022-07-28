@@ -10,6 +10,8 @@ resource "aws_lambda_function" "stop_ec2_lambda" {
   role          = var.stop_start_ec2_role_arn
   handler       = "ec2_lambda_handler.stop"
 
+  source_code_hash = filebase64sha256("${path.module}/lambda/ec2_lambda_handler.zip")
+
   runtime     = "python3.7"
   memory_size = "250"
   timeout     = "60"
@@ -38,6 +40,8 @@ resource "aws_lambda_function" "start_ec2_lambda" {
   function_name = "startEC2Lambda"
   role          = var.stop_start_ec2_role_arn
   handler       = "ec2_lambda_handler.start"
+
+  source_code_hash = filebase64sha256("${path.module}/lambda/ec2_lambda_handler.zip")
 
   runtime     = "python3.7"
   memory_size = "250"

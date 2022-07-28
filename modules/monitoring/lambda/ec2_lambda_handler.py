@@ -1,11 +1,11 @@
 import boto3
-region = 'eu-central-1'
+region = 'us-east-1'
 ec2 = boto3.client('ec2', region_name=region)
 response = ec2.describe_instances(Filters=[
         {
-            'Name': 'tag:Auto-Start',
+            'Name': 'tag:Name',
             'Values': [
-                'true',
+                'FoundryVTT',
             ]
         },
     ])

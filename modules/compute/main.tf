@@ -117,15 +117,25 @@ resource "aws_instance" "foundry" {
   }
 
   provisioner "file" {
-    source      = "files/setup_cron_backup.sh"
-    destination = "/tmp/setup_cron_backup.sh"
+    source      = "files/initiate_world.sh"
+    destination = "/home/ubuntu/scripts/initiate_world.sh"
+  }
+
+  provisioner "file" {
+    source      = "files/foundry-setup.json"
+    destination = "/home/ubuntu/files/foundry-setup.json"
+  }
+
+  provisioner "file" {
+    source      = "files/setup_crontab.sh"
+    destination = "/tmp/setup_crontab.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
       "bash /tmp/foundry_install_start.sh",
       "sudo bash /tmp/nginx_config.sh ${self.public_dns}",
-      "bash /tmp/setup_cron_backup.sh",
+      "bash /tmp/setup_crontab.sh ${self.public_dns}",
       "pm2 restart foundry"
     ]
   }
@@ -152,4 +162,9 @@ resource "aws_instance" "foundry" {
     private_key = file("./keys/foundry.pem")
     host        = self.public_ip
   }
+}
+
+resource "aws_eip" "lb" {
+  instance = aws_instance.foundry.id
+  vpc      = true
 }
