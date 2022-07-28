@@ -3,9 +3,9 @@ resource "aws_s3_bucket" "foundry" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = [
-        "GET",
-        "POST",
-        "HEAD",
+      "GET",
+      "POST",
+      "HEAD",
     ]
     allowed_origins = ["*"]
     expose_headers  = []

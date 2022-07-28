@@ -16,17 +16,23 @@ provider "aws" {
 }
 
 module "compute" {
-  source           = "./modules/compute"
-  foundry_int_type = var.foundry_int_type
-  foundry_key      = module.iam.key
-  foundry_secret   = module.iam.secret
+  source              = "./modules/compute"
+  foundry_int_type    = var.foundry_int_type
+  foundry_volume_size = var.foundry_volume_size
+  foundry_key         = module.iam.key
+  foundry_secret      = module.iam.secret
 }
 
 module "storage" {
-  source           = "./modules/storage"
+  source = "./modules/storage"
 }
 
 module "iam" {
   source             = "./modules/iam"
   foundry_bucket_arn = module.storage.foundry_bucket_arn
+}
+
+module "monitoring" {
+  source                  = "./modules/monitoring"
+  stop_start_ec2_role_arn = module.iam.stop_start_ec2_role_arn
 }

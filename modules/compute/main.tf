@@ -20,17 +20,17 @@ resource "aws_key_pair" "generated_key" {
   public_key = tls_private_key.foundry.public_key_openssh
 }
 
-data "aws_ami" "ubuntu-20-04" {
+data "aws_ami" "ubuntu_20_04" {
   owners = ["099720109477"]
 
   filter {
     name   = "image-id"
-    values = ["ami-042e8287309f5df03"]
+    values = ["ami-08d4ac5b634553e16"]
   }
 }
 
 resource "aws_security_group" "foundry" {
-  name = "foundry-sg"
+  name = "foundry_sg"
 
   ingress {
     from_port        = 80
@@ -66,10 +66,14 @@ resource "aws_security_group" "foundry" {
 }
 
 resource "aws_instance" "foundry" {
-  ami                    = data.aws_ami.ubuntu-20-04.id
+  ami                    = data.aws_ami.ubuntu_20_04.id
   instance_type          = var.foundry_int_type
   key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.foundry.id]
+
+  root_block_device {
+    volume_size = var.foundry_volume_size
+  }
 
   tags = {
     Name = "FoundryVTT"

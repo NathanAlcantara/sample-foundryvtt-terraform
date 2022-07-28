@@ -1,2 +1,3 @@
 ## EC2
-foundry_int_type  = "t2.micro"
+foundry_int_type    = "t3.small"
+foundry_volume_size = 15
