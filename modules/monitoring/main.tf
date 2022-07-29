@@ -4,7 +4,7 @@ resource "null_resource" "install_python_dependencies" {
   }
   provisioner "local-exec" {
     working_dir = "${path.module}/layer"
-    command     = "find ./* -not -name 'requirements.txt' -print0 | xargs -0 rm -rf && pip3 install -t . -r requirements.txt && rm -rf *dist-info __pycache__ && zip -rq9 python_dependecies.zip ."
+    command     = "mkdir python && pip install -t python -r requirements.txt && rm -rf python/*dist-info __pycache__ && zip -rq9 python_dependecies.zip python && rm -rf python"
   }
 }
 
@@ -40,6 +40,12 @@ resource "aws_lambda_function" "stop_ec2_lambda" {
   timeout     = "60"
 
   layers = [aws_lambda_layer_version.layer_dependencies.arn]
+
+  environment {
+    variables = {
+      DISCORD_WEBHOOK_URL = var.discord_webhook_url
+    }
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "ec2_stop_rule" {
@@ -73,6 +79,12 @@ resource "aws_lambda_function" "start_ec2_lambda" {
   timeout     = "60"
 
   layers = [aws_lambda_layer_version.layer_dependencies.arn]
+
+  environment {
+    variables = {
+      DISCORD_WEBHOOK_URL = var.discord_webhook_url
+    }
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "ec2_start_rule" {

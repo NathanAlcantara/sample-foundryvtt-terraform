@@ -9,8 +9,10 @@
 
 First you have to put inside the `files` folder the foundryvtt.zip that you can download using your license (This is a temporary mesure).
 
+If you want notify to discord when instance is uping or downing you need to [create a webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
+
 After this you just initialize terraform: `terraform init`
-And then you can `plan` and/or `apply` to your account and see the magic working! :tada: 
+And then you can `plan` and/or `apply` to your account, inform the webhook (or just press enter) and see the magic working! :tada: 
 
 # Migrating of a existent instance
 

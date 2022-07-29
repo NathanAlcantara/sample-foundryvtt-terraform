@@ -35,4 +35,5 @@ module "iam" {
 module "monitoring" {
   source                  = "./modules/monitoring"
   stop_start_ec2_role_arn = module.iam.stop_start_ec2_role_arn
+  discord_webhook_url     = var.discord_webhook_url
 }
