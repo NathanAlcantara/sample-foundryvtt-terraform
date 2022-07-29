@@ -1,7 +1,30 @@
+resource "null_resource" "install_python_dependencies" {
+  triggers = {
+    file_change = filebase64sha256("${path.module}/layer/requirements.txt")
+  }
+  provisioner "local-exec" {
+    working_dir = "${path.module}/layer"
+    command     = "find ./* -not -name 'requirements.txt' -print0 | xargs -0 rm -rf && pip3 install -t . -r requirements.txt && rm -rf *dist-info __pycache__ && zip -rq9 python_dependecies.zip ."
+  }
+}
+
 data "archive_file" "zip_lambda" {
   type        = "zip"
   source_file = "${path.module}/lambda/ec2_lambda_handler.py"
   output_path = "${path.module}/lambda/ec2_lambda_handler.zip"
+}
+
+resource "aws_lambda_layer_version" "layer_dependencies" {
+  filename   = "${path.module}/layer/python_dependecies.zip"
+  layer_name = "python_dependecies"
+
+  source_code_hash = filebase64sha256("${path.module}/layer/python_dependecies.zip")
+
+  compatible_runtimes = ["python3.7"]
+
+  depends_on = [
+    null_resource.install_python_dependencies
+  ]
 }
 
 resource "aws_lambda_function" "stop_ec2_lambda" {
@@ -10,11 +33,13 @@ resource "aws_lambda_function" "stop_ec2_lambda" {
   role          = var.stop_start_ec2_role_arn
   handler       = "ec2_lambda_handler.stop"
 
-  source_code_hash = filebase64sha256("${path.module}/lambda/ec2_lambda_handler.zip")
+  source_code_hash = data.archive_file.zip_lambda.output_base64sha256
 
   runtime     = "python3.7"
   memory_size = "250"
   timeout     = "60"
+
+  layers = [aws_lambda_layer_version.layer_dependencies.arn]
 }
 
 resource "aws_cloudwatch_event_rule" "ec2_stop_rule" {
@@ -41,11 +66,13 @@ resource "aws_lambda_function" "start_ec2_lambda" {
   role          = var.stop_start_ec2_role_arn
   handler       = "ec2_lambda_handler.start"
 
-  source_code_hash = filebase64sha256("${path.module}/lambda/ec2_lambda_handler.zip")
+  source_code_hash = data.archive_file.zip_lambda.output_base64sha256
 
   runtime     = "python3.7"
   memory_size = "250"
   timeout     = "60"
+
+  layers = [aws_lambda_layer_version.layer_dependencies.arn]
 }
 
 resource "aws_cloudwatch_event_rule" "ec2_start_rule" {

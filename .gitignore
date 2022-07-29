@@ -9,3 +9,7 @@ keys/*
 aws.json
 files/*.json
 set_worlds_dirs.sh
+
+**/layer/*
+!**/layer/requirements.txt
+
