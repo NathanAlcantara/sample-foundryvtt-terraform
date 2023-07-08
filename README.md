@@ -5,6 +5,10 @@
 * [Terraform CLI](https://www.terraform.io)
 * [jq](https://stedolan.github.io/jq)
 
+# Start Instance
+
+`aws lambda invoke --function-name startEC2Lambda --cli-binary-format raw-in-base64-out --payload '{ "key": "value" }' response.json`
+
 # Creating a new Instance
 
 First you have to put inside the `files` folder the foundryvtt.zip that you can download using your license (This is a temporary mesure).

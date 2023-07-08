@@ -4,7 +4,7 @@ resource "null_resource" "install_python_dependencies" {
   }
   provisioner "local-exec" {
     working_dir = "${path.module}/layer"
-    command     = "mkdir python && pip install -t python -r requirements.txt && rm -rf python/*dist-info __pycache__ && zip -rq9 python_dependecies.zip python && rm -rf python"
+    command     = "mkdir -p python && pip install -t python -r requirements.txt && rm -rf python/*dist-info __pycache__ && zip -rq9 python_dependecies.zip python && rm -rf python"
   }
 }
 
@@ -20,7 +20,7 @@ resource "aws_lambda_layer_version" "layer_dependencies" {
 
   source_code_hash = filebase64sha256("${path.module}/layer/python_dependecies.zip")
 
-  compatible_runtimes = ["python3.7"]
+  compatible_runtimes = ["python3.8"]
 
   depends_on = [
     null_resource.install_python_dependencies

@@ -9,3 +9,4 @@ keys/*
 aws.json
 files/*.json
 set_worlds_dirs.sh
+response.json
