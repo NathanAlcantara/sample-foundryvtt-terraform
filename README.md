@@ -5,9 +5,10 @@
 * [Terraform CLI](https://www.terraform.io)
 * [jq](https://stedolan.github.io/jq)
 
-# Start Instance
+# Start/Stop Instance
 
 `aws lambda invoke --function-name startEC2Lambda --cli-binary-format raw-in-base64-out --payload '{ "key": "value" }' response.json`
+`aws lambda invoke --function-name stopEC2Lambda --cli-binary-format raw-in-base64-out --payload '{ "key": "value" }' response.json`
 
 # Creating a new Instance
 
