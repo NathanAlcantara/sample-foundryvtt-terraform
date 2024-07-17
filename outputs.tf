@@ -1,7 +1,7 @@
-output "foundry_dns" {
-  value = module.compute.public_dns
+output "foundry_public_ip" {
+  value = module.compute.foundry_public_ip
 }
 
-output "foundry_ip" {
-  value = module.compute.public_ip
+output "foundry_dns_name_servers" {
+  value = module.dns.foundry_dns_name_servers
 }

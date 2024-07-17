@@ -1,7 +1,6 @@
-output "public_dns" {
-  value = aws_instance.foundry.public_dns
+output "foundry_instance_id" {
+  value = module.ec2_instance.id
 }
-
-output "public_ip" {
-  value = aws_instance.foundry.public_ip
+output "foundry_public_ip" {
+  value = module.ec2_instance.public_ip
 }

@@ -1,26 +1,41 @@
+locals {
+  python_runtime = "python3.12"
+}
+
 resource "null_resource" "install_python_dependencies" {
   triggers = {
     file_change = filebase64sha256("${path.module}/layer/requirements.txt")
   }
+
   provisioner "local-exec" {
     working_dir = "${path.module}/layer"
-    command     = "mkdir -p python && pip install -t python -r requirements.txt && rm -rf python/*dist-info __pycache__ && zip -rq9 python_dependecies.zip python && rm -rf python"
+    command     = "mkdir -p python_dependencies/python && pip install -t python_dependencies/python -r requirements.txt && rm -rf python_dependencies/python/*dist-info __pycache__"
   }
 }
 
+data "archive_file" "zip_layer" {
+  depends_on = [null_resource.install_python_dependencies]
+
+  type             = "zip"
+  source_dir       = "${path.module}/layer/python_dependencies"
+  output_file_mode = "0666"
+  output_path      = "${path.module}/layer/python_dependecies.zip"
+}
+
 data "archive_file" "zip_lambda" {
-  type        = "zip"
-  source_file = "${path.module}/lambda/ec2_lambda_handler.py"
-  output_path = "${path.module}/lambda/ec2_lambda_handler.zip"
+  type             = "zip"
+  source_file      = "${path.module}/lambda/ec2_lambda_handler.py"
+  output_file_mode = "0666"
+  output_path      = "${path.module}/lambda/ec2_lambda_handler.zip"
 }
 
 resource "aws_lambda_layer_version" "layer_dependencies" {
   filename   = "${path.module}/layer/python_dependecies.zip"
   layer_name = "python_dependecies"
 
-  source_code_hash = filebase64sha256("${path.module}/layer/python_dependecies.zip")
+  source_code_hash = data.archive_file.zip_layer.output_base64sha256
 
-  compatible_runtimes = ["python3.8"]
+  compatible_runtimes = [local.python_runtime]
 
   depends_on = [
     null_resource.install_python_dependencies
@@ -35,7 +50,7 @@ resource "aws_lambda_function" "stop_ec2_lambda" {
 
   source_code_hash = data.archive_file.zip_lambda.output_base64sha256
 
-  runtime     = "python3.7"
+  runtime     = local.python_runtime
   memory_size = "250"
   timeout     = "60"
 
@@ -74,7 +89,7 @@ resource "aws_lambda_function" "start_ec2_lambda" {
 
   source_code_hash = data.archive_file.zip_lambda.output_base64sha256
 
-  runtime     = "python3.7"
+  runtime     = local.python_runtime
   memory_size = "250"
   timeout     = "60"
 

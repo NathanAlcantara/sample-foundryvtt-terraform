@@ -8,7 +8,20 @@
 # Start/Stop Instance
 
 `aws lambda invoke --function-name startEC2Lambda --cli-binary-format raw-in-base64-out --payload '{ "key": "value" }' response.json`
+
 `aws lambda invoke --function-name stopEC2Lambda --cli-binary-format raw-in-base64-out --payload '{ "key": "value" }' response.json`
+
+# Setup
+
+You can add a file `foundry-setup.json` on files folder to prepare some setups, like insert the license automatically and configure the world that you want to load always that ec2 is started, this is the format of file: 
+
+```json
+{
+    "foundryLicenseKey": "secret",
+    "adminPass": "password",
+    "worldToInitiate": "world"
+}
+```
 
 # Creating a new Instance
 

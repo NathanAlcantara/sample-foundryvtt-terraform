@@ -5,6 +5,7 @@ terraform
 
 keys/*
 
+python_dependencies
 *.zip
 aws.json
 files/*.json

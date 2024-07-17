@@ -1,5 +1,20 @@
 resource "aws_s3_bucket" "foundry" {
-  bucket = "foundry-vtt-rpg-storage"
+  bucket = "foundryvtt-rpg-storage"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "foundry" {
+  bucket = aws_s3_bucket.foundry.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "foundry" {
+  bucket = aws_s3_bucket.foundry.id
+
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = [
@@ -10,14 +25,6 @@ resource "aws_s3_bucket" "foundry" {
     allowed_origins = ["*"]
     expose_headers  = []
     max_age_seconds = 3000
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
   }
 }
 
