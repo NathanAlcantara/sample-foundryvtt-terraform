@@ -50,3 +50,19 @@ resource "aws_s3_bucket_policy" "foundry" {
 }
 POLICY
 }
+
+resource "aws_s3_bucket_ownership_controls" "foundry" {
+  bucket = aws_s3_bucket.foundry.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+resource "aws_s3_bucket_acl" "foundry" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.foundry
+  ]
+
+  bucket = aws_s3_bucket.foundry.id
+  acl    = "public-read"
+}
